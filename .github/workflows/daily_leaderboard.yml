@@ -1,0 +1,26 @@
+name: Daily Lock-In Leaderboard
+
+on:
+  schedule:
+    - cron: '0 12 * * *' # 4 AM PST
+  workflow_dispatch: # Allows manual testing
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install pandas requests
+
+      - name: Execute Script
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: python leaderboard.py
