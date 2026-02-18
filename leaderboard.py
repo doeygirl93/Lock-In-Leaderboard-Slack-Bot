@@ -8,7 +8,7 @@ from datetime import datetime
 SHEET_ID = "177DxdI-4m_hha9O1bGUmlYgKph6P0rFX6VIwgDIsBwE"
 GID = "528146575"
 SLACK_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
-SLACK_CHANNEL = "C0AAQJZCRCH"
+SLACK_CHANNEL = "D091S1SACHG"
 
 def get_leaderboard():
     url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid={GID}"
