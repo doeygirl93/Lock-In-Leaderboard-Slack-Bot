@@ -8,7 +8,7 @@ from datetime import datetime
 SHEET_ID = "177DxdI-4m_hha9O1bGUmlYgKph6P0rFX6VIwgDIsBwE"
 GID = "528146575"
 SLACK_TOKEN = os.environ.get("SLACK_BOT_TOKEN")
-SLACK_CHANNEL = "C0AAQJZCRCH" 
+SLACK_CHANNEL = "C0AAQJZCRCH"
 
 def get_leaderboard():
     url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid={GID}"
@@ -20,7 +20,6 @@ def get_leaderboard():
 
     today_str = datetime.now().strftime("%b %d, %Y")
     
-    # --- REALISTIC DEV INTROS ---
     intros = [
         "_It’s 4:00 AM. Your desk is a chaotic landscape of empty mugs and sticky notes. You just solved a bug that’s been haunting you for three days, and for a brief moment, you feel like a god. Then you realize you forgot to hit 'Save.'_",
         "_The terminal window is the only light in the room. Your brain feels like it has 47 tabs open, and 3 of them are playing music you can’t find. You’re deep in the zone._",
@@ -38,7 +37,6 @@ def get_leaderboard():
         "_The mechanical keyboard clicks are echoing in the hallway. Your neighbors think you're a hacker; you're actually just trying to center a button. You check the stats..._"
     ]
 
-    # --- PG / TECH-FOCUSED QUOTES ---
     quotes = [
         "\"Coding is fun until the code starts doing what you told it to do instead of what you wanted it to do.\"",
         "\"The best error message is the one that never shows up.\"",
@@ -56,7 +54,6 @@ def get_leaderboard():
     todays_grinders = df[df['days'] == 0]['id'].tolist()
     grinders_list = ", ".join([f"<@{uid}>" for uid in todays_grinders]) if todays_grinders else "The silence is deafening... I guess Nobody locked in today :sobspin:"
 
-    # --- BUILD MESSAGE ---
     msg = f"{random.choice(intros)}\n\n"
     msg += f":rac_woah:: *WELCOME TO THE LOCK-IN LEADERBOARD :feather-sleepover: | {today_str}* \n\n"
     msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
@@ -84,10 +81,25 @@ def get_leaderboard():
 
     msg += "\n"
     msg += f"📜 *Quote of the day:* {random.choice(quotes)}\n\n"
-    
     msg += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     msg += ":yay: _Missed a huddle? Get back in there to make sure you don't lose points!_\n\n"
     
     return msg
 
-# ... post_to_slack and __main__ remain the same
+def post_to_slack(text):
+    if not SLACK_TOKEN:
+        print("Error: SLACK_BOT_TOKEN not found.")
+        return
+    response = requests.post(
+        "https://slack.com/api/chat.postMessage",
+        headers={"Authorization": f"Bearer {SLACK_TOKEN}"},
+        json={"channel": SLACK_CHANNEL, "text": text}
+    )
+    if response.json().get("ok"):
+        print("Successfully posted to Slack!")
+    else:
+        print(f"Slack Error: {response.json()}")
+
+if __name__ == "__main__":
+    content = get_leaderboard()
+    post_to_slack(content)
